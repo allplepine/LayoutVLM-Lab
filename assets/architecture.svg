@@ -24,7 +24,7 @@
     <line x1="96" y1="140" x2="174" y2="140" stroke="#b6c4d5" stroke-width="2"/>
     <line x1="96" y1="160" x2="174" y2="160" stroke="#b6c4d5" stroke-width="2"/>
     <line x1="96" y1="180" x2="160" y2="180" stroke="#b6c4d5" stroke-width="2"/>
-    <text x="135" y="268" text-anchor="middle" font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#3b5163">Input Document</text>
+    <text x="135" y="268" text-anchor="middle" font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#3b5163">Input Image</text>
   </g>
 
   <!-- layout detector -->
