@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-  <img src="assets/banner.svg" alt="LayoutVLM-Lab Banner" width="80%">
+  <img src="assets/banner.jpg" alt="LayoutVLM-Lab Banner" width="80%">
 </p>
 
 <p align="center">
@@ -98,7 +98,7 @@ Example config: `config/paddle_layoutv2.yaml`. Key sections:
 ## Architecture Overview
 
 <p align="center">
-  <img src="assets/architecture.svg" alt="Architecture Overview" width="90%">
+  <img src="assets/architecture.jpg" alt="Architecture Overview" width="90%">
 </p>
 
 ## OmniDocBench Results

@@ -5,7 +5,7 @@
 </div>
 
 <p align="center">
-  <img src="assets/banner.svg" alt="LayoutVLM-Lab Banner" width="80%">
+  <img src="assets/banner.jpg" alt="LayoutVLM-Lab Banner" width="80%">
 </p>
 
 <p align="center">
@@ -98,7 +98,7 @@ cp .env.example .env
 ## 架构概览
 
 <p align="center">
-  <img src="assets/architecture.svg" alt="Architecture Overview" width="90%">
+  <img src="assets/architecture.jpg" alt="Architecture Overview" width="90%">
 </p>
 
 ## OmniDocBench 结果
