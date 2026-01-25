@@ -98,8 +98,9 @@ Example config: `config/paddle_layoutv2.yaml`. Key sections:
 ## Architecture Overview
 
 <p align="center">
-  <img src="assets/architecture.jpg" alt="Architecture Overview" width="90%">
+  <img src="assets/architecture.jpg" alt="Architecture Overview" width="100%">
 </p>
+
 
 ## OmniDocBench Results
 

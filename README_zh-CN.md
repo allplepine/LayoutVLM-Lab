@@ -98,7 +98,7 @@ cp .env.example .env
 ## 架构概览
 
 <p align="center">
-  <img src="assets/architecture.jpg" alt="Architecture Overview" width="90%">
+  <img src="assets/architecture.jpg" alt="Architecture Overview" width="100%">
 </p>
 
 ## OmniDocBench 结果
