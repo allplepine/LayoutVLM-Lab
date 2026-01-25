@@ -1,0 +1,111 @@
+﻿<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="360" viewBox="0 0 1200 360">
+  <defs>
+    <marker id="arrow" markerWidth="12" markerHeight="10" refX="10" refY="5" orient="auto" markerUnits="strokeWidth">
+      <path d="M 0 0 L 12 5 L 0 10 z" fill="#102233"/>
+    </marker>
+  </defs>
+
+  <rect width="1200" height="360" fill="#f9fbff"/>
+  <rect x="40" y="40" width="1120" height="280" rx="18" fill="#ffffff" stroke="#e1e7f0" stroke-width="1"/>
+
+  <!-- section labels -->
+  <g font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" font-weight="600" fill="#3b5163">
+    <text x="115" y="86" text-anchor="middle">Input</text>
+    <text x="310" y="86" text-anchor="middle">Layout</text>
+    <text x="535" y="86" text-anchor="middle">Blocks + Labels</text>
+    <text x="785" y="86" text-anchor="middle">Parallel VLM</text>
+    <text x="985" y="86" text-anchor="middle">Output</text>
+  </g>
+
+  <!-- input document -->
+  <g>
+    <rect x="80" y="110" width="110" height="140" rx="10" fill="#ffffff" stroke="#102233" stroke-width="1.2"/>
+    <path d="M 170 110 L 190 110 L 190 130 Z" fill="#e9f2ff" stroke="#102233" stroke-width="1.2"/>
+    <line x1="96" y1="140" x2="174" y2="140" stroke="#b6c4d5" stroke-width="2"/>
+    <line x1="96" y1="160" x2="174" y2="160" stroke="#b6c4d5" stroke-width="2"/>
+    <line x1="96" y1="180" x2="160" y2="180" stroke="#b6c4d5" stroke-width="2"/>
+    <text x="135" y="268" text-anchor="middle" font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#3b5163">Input Document</text>
+  </g>
+
+  <!-- layout detector -->
+  <g font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" fill="#102233">
+    <rect x="230" y="150" width="160" height="60" rx="12" fill="#f6f8fb" stroke="#102233" stroke-width="1.2"/>
+    <text x="310" y="185" font-size="14" text-anchor="middle">Layout Detector</text>
+  </g>
+
+  <!-- blocks with labels -->
+  <g>
+    <rect x="420" y="95" width="230" height="170" rx="14" fill="#ffffff" stroke="#b6c4d5" stroke-width="1.2" stroke-dasharray="4 4"/>
+    <g font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#102233" text-anchor="middle">
+      <rect x="440" y="125" width="90" height="38" rx="8" fill="#ffffff" stroke="#102233" stroke-width="1"/>
+      <text x="485" y="148">Block</text>
+      <rect x="500" y="130" width="28" height="16" rx="8" fill="#e8f1ff"/>
+      <text x="514" y="142" font-size="9" fill="#1f4e79">table</text>
+
+      <rect x="545" y="125" width="90" height="38" rx="8" fill="#ffffff" stroke="#102233" stroke-width="1"/>
+      <text x="590" y="148">Block</text>
+      <rect x="605" y="130" width="40" height="16" rx="8" fill="#fff0e8"/>
+      <text x="625" y="142" font-size="9" fill="#b3561e">formula</text>
+
+      <rect x="440" y="175" width="90" height="38" rx="8" fill="#ffffff" stroke="#102233" stroke-width="1"/>
+      <text x="485" y="198">Block</text>
+      <rect x="502" y="180" width="26" height="16" rx="8" fill="#eef7f1"/>
+      <text x="515" y="192" font-size="9" fill="#2f6f4f">text</text>
+
+      <rect x="545" y="175" width="90" height="38" rx="8" fill="#ffffff" stroke="#102233" stroke-width="1"/>
+      <text x="590" y="198">Block</text>
+      <rect x="603" y="180" width="34" height="16" rx="8" fill="#f1eefc"/>
+      <text x="620" y="192" font-size="9" fill="#56408a">figure</text>
+    </g>
+  </g>
+
+  <!-- parallel VLM workers -->
+  <g>
+    <rect x="690" y="95" width="190" height="170" rx="14" fill="#ffffff" stroke="#b6c4d5" stroke-width="1.2" stroke-dasharray="4 4"/>
+    <g font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#102233" text-anchor="middle">
+      <rect x="710" y="120" width="150" height="34" rx="8" fill="#f6f8fb" stroke="#102233" stroke-width="1"/>
+      <text x="785" y="142">VLM Worker</text>
+
+      <rect x="710" y="168" width="150" height="34" rx="8" fill="#f6f8fb" stroke="#102233" stroke-width="1"/>
+      <text x="785" y="190">VLM Worker</text>
+
+      <rect x="710" y="216" width="150" height="34" rx="8" fill="#f6f8fb" stroke="#102233" stroke-width="1"/>
+      <text x="785" y="238">VLM Worker</text>
+    </g>
+  </g>
+
+  <!-- merge and compose -->
+  <g font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" fill="#102233">
+    <rect x="910" y="150" width="150" height="60" rx="12" fill="#fff2e8" stroke="#102233" stroke-width="1.2"/>
+    <text x="985" y="176" font-size="13" text-anchor="middle">Merge &amp; Compose</text>
+    <text x="985" y="194" font-size="11" text-anchor="middle" fill="#3b5163">Markdown / JSON</text>
+  </g>
+
+  <!-- output document -->
+  <g>
+    <rect x="1070" y="110" width="90" height="140" rx="10" fill="#ffffff" stroke="#102233" stroke-width="1.2"/>
+    <path d="M 1140 110 L 1160 110 L 1160 130 Z" fill="#e9f2ff" stroke="#102233" stroke-width="1.2"/>
+    <line x1="1084" y1="140" x2="1148" y2="140" stroke="#b6c4d5" stroke-width="2"/>
+    <line x1="1084" y1="160" x2="1148" y2="160" stroke="#b6c4d5" stroke-width="2"/>
+    <line x1="1084" y1="180" x2="1138" y2="180" stroke="#b6c4d5" stroke-width="2"/>
+    <text x="1115" y="268" text-anchor="middle" font-family="'IBM Plex Sans', 'Source Sans Pro', 'Helvetica Neue', Arial, sans-serif" font-size="12" fill="#3b5163">Parsed Document</text>
+  </g>
+
+  <!-- arrows -->
+  <g stroke="#102233" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <line x1="190" y1="180" x2="230" y2="180"/>
+    <line x1="390" y1="180" x2="420" y2="180"/>
+
+    <line x1="650" y1="137" x2="710" y2="137"/>
+    <line x1="650" y1="185" x2="710" y2="185"/>
+    <line x1="650" y1="233" x2="710" y2="233"/>
+
+    <line x1="860" y1="137" x2="910" y2="166"/>
+    <line x1="860" y1="185" x2="910" y2="180"/>
+    <line x1="860" y1="233" x2="910" y2="194"/>
+
+    <path d="M 590 213 L 590 300 L 985 300 L 985 210" stroke-dasharray="5 4"/>
+
+    <line x1="1060" y1="180" x2="1070" y2="180"/>
+  </g>
+</svg>

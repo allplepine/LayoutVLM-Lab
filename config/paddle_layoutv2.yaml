@@ -1,0 +1,87 @@
+﻿# Global pipeline settings
+experiment:
+  name: "test_run"
+
+# Input settings
+input:
+  image_root: "/your/path/to/images"
+  filter_processed: true
+
+# Output settings
+output:
+  output_dir: "./results"
+  save_images: true
+  
+# Layout module config
+# -------------------------------------------------------------
+layout:
+  type: "paddle"  # selected module: "paddle"
+  
+  # paddle-specific settings
+  config:
+    model_name: "PP-DocLayoutV2"
+    model_dir: "/your/path/to/PaddleOCR-VL/PP-DocLayoutV2"
+    device_list: "0"  # GPU IDs, comma-separated
+    nums_per_gpu: 1     # processes per GPU
+    merge_blocks_before_md: true
+    
+  # Label mapping: Layout label -> Metric label
+  label_mapping:
+    # labels ignored when exporting Markdown
+    ignore:
+      - number
+      - footnote
+      - header
+      - header_image
+      - footer
+      - footer_image
+      - aside_text
+      
+    # map to 'image' (VLM skips; only crop + save)
+    image:
+      - image
+      - header_image
+      - footer_image
+      - seal
+      - chart
+      
+    # map to 'table' (VLM table mode)
+    table:
+      - table
+      
+    # map to 'formula' (VLM formula mode)
+    formula:
+      - display_formula
+      - inline_formula
+      
+    # other unmatched labels default to 'ocr' (text)
+
+# VLM module config
+# -------------------------------------------------------------
+vlm:
+  type: "openai"  # selected module: "openai"
+  
+  # openai-specific settings
+  config:
+    model_name: "Qwen3-VL"
+    api_key: "${OPENAI_API_KEY}"
+    base_url: "${OPENAI_API_BASE_URL}"
+    
+    max_tokens: 20000
+    temperature: 0.0
+    timeout: 6000
+    
+    text_before_image: true
+
+  # enabled metrics (only these block types go to VLM)
+  metrics:
+    - table
+    - formula
+    - ocr
+
+# Pipeline concurrency
+# -------------------------------------------------------------
+pipeline:
+  vlm_workers: 100
+  vlm_queue_max_size: 200  # recommended: vlm_workers * 2
+
