@@ -6,6 +6,7 @@ import traceback
 from typing import List, Dict, Any
 from multiprocessing import Process, Queue, Lock, Manager, set_start_method
 from threading import Thread
+from concurrent.futures import ThreadPoolExecutor, as_completed
 from tqdm import tqdm
 import copy
 from .config import Config, load_config
@@ -108,93 +109,123 @@ def vlm_worker_thread(
     # json2md needs label_mapping which is separate in config.layout
     layout_static_config = config.layout.config.copy()
     layout_static_config["label_mapping"] = config.layout.label_mapping
+
+    block_workers = getattr(config.pipeline, "block_workers", 0)
+    if not block_workers or block_workers < 0:
+        block_workers = min(8, (os.cpu_count() or 4))
+
+    def _process_block(idx: int, label: str, metric_type: str, crop):
+        content = vlm.recognize(crop, metric_type)
+        content = layout_cls.post_process(content, label, layout_static_config)
+        return idx, metric_type, content
+
+    executor = ThreadPoolExecutor(max_workers=block_workers)
     
-    while True:
-        try:
-            task = vlm_queue.get(timeout=1.0)
-        except queue.Empty:
-            continue
-        
-        if task is None:
-            break
-        
-        image_file, data, img_path = task
-        base_name = os.path.splitext(image_file)[0]
-        blocks = data.get("parsing_res_list", [])
-        counts = {}
-        
-        # Process blocks with VLM
-        for idx, block in enumerate(blocks):
-            label = block.get("block_label", "")
-            
-            if label in ignore_labels:
-                continue
-                
-            # Get metric type
-            # Default to "ocr" if not implicitly ignored or mapped
-            metric_type = label_to_metric.get(label, "ocr")
-            # Skip if this metric is not enabled in VLM config
-            if metric_type not in enabled_metrics:
-                continue
-            
-            bbox = block.get("block_bbox")
-            if not bbox:
-                continue
-            
+    try:
+        while True:
             try:
-                cropped = crop_by_boxes(img_path, [bbox])
-                if not cropped:
+                task = vlm_queue.get(timeout=1.0)
+            except queue.Empty:
+                continue
+            
+            if task is None:
+                break
+            
+            image_file, data, img_path = task
+            base_name = os.path.splitext(image_file)[0]
+            blocks = data.get("parsing_res_list", [])
+            counts = {}
+
+            block_items = []
+            boxes = []
+
+            for idx, block in enumerate(blocks):
+                label = block.get("block_label", "")
+                metric_type = label_to_metric.get(label, "ocr")
+                needs_vlm = (label not in ignore_labels) and (metric_type in enabled_metrics)
+                needs_save = config.output.save_images and (label in image_labels)
+
+                if not (needs_vlm or needs_save):
                     continue
-                # Recognize using metric_type which maps to prompt
-                content = vlm.recognize(cropped[0], metric_type)
+
+                bbox = block.get("block_bbox")
+                if not bbox or len(bbox) != 4:
+                    continue
                 
-                # Post-process content using Layout-specific logic
-                # We need the original label here
-                content = layout_cls.post_process(content, label, layout_static_config)
+                try:
+                    x1, y1, x2, y2 = map(int, bbox)
+                except Exception:
+                    continue
                 
-                blocks[idx]["block_content"] = content
-                
-                # Count by metric type
-                counts[metric_type] = counts.get(metric_type, 0) + 1
-            except Exception:
-                logger.error("VLM error for %s block %d:\n%s", 
-                            image_file, idx, traceback.format_exc())
-        
-        # Save images for image-type blocks
-        if config.output.save_images:
-            for block in blocks:
-                label = block.get("block_label")
-                if label in image_labels and block.get("block_bbox"):
+                if x1 >= x2 or y1 >= y2:
+                    continue
+
+                block_items.append({
+                    "idx": idx,
+                    "label": label,
+                    "metric_type": metric_type,
+                    "needs_vlm": needs_vlm,
+                    "needs_save": needs_save,
+                    "block_id": block.get("block_id"),
+                })
+                boxes.append([x1, y1, x2, y2])
+
+            crops = crop_by_boxes(img_path, boxes) if boxes else []
+            if boxes and len(crops) != len(boxes):
+                logger.error("Crop failed for %s: %d/%d", image_file, len(crops), len(boxes))
+                crops = []
+
+            futures = {}
+            for item, crop in zip(block_items, crops):
+                if item["needs_vlm"]:
+                    fut = executor.submit(
+                        _process_block,
+                        item["idx"],
+                        item["label"],
+                        item["metric_type"],
+                        crop,
+                    )
+                    futures[fut] = item["idx"]
+
+                if item["needs_save"]:
                     try:
-                        bbox = block["block_bbox"]
-                        x1, y1, x2, y2 = map(int, bbox)
-                        cropped = crop_by_boxes(img_path, [[x1, y1, x2, y2]])
-                        if cropped:
-                            crop_name = f"{base_name}_{block['block_id']}.jpg"
-                            crop_save_path = os.path.join(config.imgs_dir, crop_name)
-                            cropped[0].save(crop_save_path, "JPEG", quality=95)
+                        crop_name = f"{base_name}_{item['block_id']}.jpg"
+                        crop_save_path = os.path.join(config.imgs_dir, crop_name)
+                        crop.save(crop_save_path, "JPEG", quality=95)
                     except Exception:
                         pass
-        
-        # Save outputs
-        try:
-            # Save Markdown (Delegated to Layout handler)
-            data_copy = copy.deepcopy(data)
-            md_content = layout_cls.json2md(data_copy, layout_static_config)
-            md_path = os.path.join(config.results_dir, f"{base_name}.md")
-            layout_cls.save_md(md_path, md_content)
-            
-            # Save JSON
-            json_path = os.path.join(config.json_dir, f"{base_name}_res.json")
-            layout_cls.save_json(json_path, data)
 
-            result_queue.put(counts)
-        except Exception:
-            logger.error("Save failed for %s:\n%s", image_file, traceback.format_exc())
-            result_queue.put({})
-        
-        with lock:
-            progress['vlm_done'] += 1
+            for fut in as_completed(futures):
+                idx = futures[fut]
+                try:
+                    idx, metric_type, content = fut.result()
+                    blocks[idx]["block_content"] = content
+                    counts[metric_type] = counts.get(metric_type, 0) + 1
+                except Exception:
+                    logger.error("VLM error for %s block %d:\n%s", 
+                                image_file, idx, traceback.format_exc())
+            
+            # Save outputs
+            try:
+                # Save Markdown (Delegated to Layout handler)
+                data_copy = copy.deepcopy(data)
+                md_content = layout_cls.json2md(data_copy, layout_static_config)
+                md_path = os.path.join(config.results_dir, f"{base_name}.md")
+                layout_cls.save_md(md_path, md_content)
+                
+                # Save JSON
+                json_path = os.path.join(config.json_dir, f"{base_name}_res.json")
+                layout_cls.save_json(json_path, data)
+
+                result_queue.put(counts)
+            except Exception:
+                logger.error("Save failed for %s:\n%s", image_file, traceback.format_exc())
+                result_queue.put({})
+            
+            with lock:
+                progress['vlm_done'] += 1
+    finally:
+        executor.shutdown(wait=True)
 
 
 def run_pipeline(config: Config, image_files: List[str] = None) -> Dict[str, int]:

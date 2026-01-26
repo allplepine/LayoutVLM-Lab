@@ -22,7 +22,7 @@ layout:
     model_name: "PP-DocLayoutV2"
     model_dir: "/your/path/to/PaddleOCR-VL/PP-DocLayoutV2"
     device_list: "0"  # GPU IDs, comma-separated
-    nums_per_gpu: 1     # processes per GPU
+    nums_per_gpu: 2     # processes per GPU
     merge_blocks_before_md: true
     
   # Label mapping: Layout label -> Metric label
@@ -79,9 +79,10 @@ vlm:
     - formula
     - ocr
 
-# Pipeline concurrency
+# Pipeline concurrency (experiment env: 4 * 80G A800)
 # -------------------------------------------------------------
 pipeline:
-  vlm_workers: 100
-  vlm_queue_max_size: 200  # recommended: vlm_workers * 2
+  vlm_workers: 50
+  vlm_queue_max_size: 100  # recommended: vlm_workers * 2
+  block_workers: 20
 

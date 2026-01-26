@@ -30,6 +30,7 @@ class ParallelConfig:
     layout_num_per_device: int = 1
     vlm_workers: int = 20
     vlm_queue_max_size: int = 50
+    block_workers: int = 0
 
 
 @dataclass

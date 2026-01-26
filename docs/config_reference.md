@@ -34,6 +34,7 @@ Results are written to `output.output_dir/<experiment.name>/`:
 | --- | --- | --- | --- |
 | `vlm_workers` | int | `20` | Number of VLM worker threads. |
 | `vlm_queue_max_size` | int | `50` | Max VLM queue size (recommend ~2x workers). |
+| `block_workers` | int | `0` | Block-level VLM thread pool size per image. `0` uses auto (`min(8, cpu_count)`). |
 
 ## Layout section
 

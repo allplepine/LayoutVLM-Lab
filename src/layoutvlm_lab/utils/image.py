@@ -17,23 +17,23 @@ def crop_by_boxes(image_path: str, boxes: List[List[int]]) -> List[Image.Image]:
         List of cropped PIL Images
     """
     try:
-        img = Image.open(image_path)
-        if img.mode != "RGB":
-            img = img.convert("RGB")
+        with Image.open(image_path) as img:
+            if img.mode != "RGB":
+                img = img.convert("RGB")
+            
+            cropped_images = []
+            for box in boxes:
+                if len(box) != 4:
+                    continue
+                x1, y1, x2, y2 = map(int, box)
+                if x1 >= x2 or y1 >= y2:
+                    continue
+                cropped = img.crop((x1, y1, x2, y2))
+                cropped_images.append(cropped)
+            
+            return cropped_images
     except Exception:
         return []
-    
-    cropped_images = []
-    for box in boxes:
-        if len(box) != 4:
-            continue
-        x1, y1, x2, y2 = map(int, box)
-        if x1 >= x2 or y1 >= y2:
-            continue
-        cropped = img.crop((x1, y1, x2, y2))
-        cropped_images.append(cropped)
-    
-    return cropped_images
 
 
 def pil_to_base64(img: Image.Image, format: str = "JPEG") -> str:
