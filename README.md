@@ -62,12 +62,12 @@ Note
 Before running, deploy the model first and ensure the model path is accessible.
 
 ```bash
-CUDA_VISIBLE_DEVICES=0,1 \
-  vllm serve Qwen/Qwen3-VL-32B-Instruct \
-  --served-model-name Qwen3-VL \
-  --port 7670 \
+CUDA_VISIBLE_DEVICES=0 \
+  vllm serve Qwen/Qwen3-VL-4B-Instruct \
+  --served-model-name Qwen3-VL-4B \
+  --port 8000 \
   --dtype bfloat16 \
-  --tensor-parallel-size 2 \
+  --tensor-parallel-size 1 \
   --pipeline_parallel_size 1 \
   --data-parallel-size 1 \
   --max_model_len 22000 \
