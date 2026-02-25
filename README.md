@@ -128,15 +128,6 @@ Example config: `config/paddle_layoutv2.yaml`. Key sections:
       <td>89.812</td>
       <td>0.041</td>
     </tr>
-    <tr>
-      <td>Qwen3-VL-32B</td>
-      <td>93.349</td>
-      <td>0.038</td>
-      <td>92.745</td>
-      <td>91.101</td>
-      <td>95.102</td>
-      <td>0.042</td>
-    </tr>
   </tbody>
 </table>
 

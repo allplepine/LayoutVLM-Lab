@@ -63,7 +63,7 @@ vlm:
   
   # openai-specific settings
   config:
-    model_name: "Qwen3-VL"
+    model_name: "${MODEL_NAME}"  # e.g., "gpt-4-0613"
     api_key: "${OPENAI_API_KEY}"
     base_url: "${OPENAI_API_BASE_URL}"
     
@@ -79,7 +79,7 @@ vlm:
     - formula
     - ocr
 
-# Pipeline concurrency (experiment env: 4 * 80G A800)
+# Pipeline concurrency
 # -------------------------------------------------------------
 pipeline:
   vlm_workers: 50
